@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p:IATA_AIDX_FlightLegNotifRQ AltLangID="EN" AsynchronousAllowedInd="true" CodeContext="" CorrelationID="" EchoToken="" PrimaryLangID="EN" RetransmissionIndicator="true" SequenceNmbr="0" Target="Production" TimeStamp="2001-12-31T12:00:00" TransactionIdentifier="" TransactionStatusCode="Start" Version="0.0" xmlns:p="http://www.iata.org/IATA/2007/00" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.iata.org/IATA/2007/00 IATA_AIDX_FlightLegNotifRQ.xsd ">
+  <p:Originator Code="" CodeContext="" CompanyShortName="" TravelSector=""/>
+  <p:DeliveringSystem Code="" CodeContext="" CompanyShortName="" TravelSector=""/>
+  <p:FlightLeg>
+    <p:LegIdentifier>
+      <p:Airline CodeContext="">p:Airline</p:Airline>
+      <p:FlightNumber>p:FlightNumber</p:FlightNumber>
+      <p:DepartureAirport CodeContext="">p:DepartureAirport</p:DepartureAirport>
+      <p:ArrivalAirport CodeContext="">p:ArrivalAirport</p:ArrivalAirport>
+      <p:OriginDate>2001-01-01</p:OriginDate>
+    </p:LegIdentifier>
+    <p:SpecialAction>Delete</p:SpecialAction>
+    <p:LegData FlightClassification="" InternationalStatus="International"/>
+    <p:TPA_Extension/>
+  </p:FlightLeg>
+</p:IATA_AIDX_FlightLegNotifRQ>

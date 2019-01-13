@@ -1,0 +1,1466 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.iata.org/IATA/2007/00" targetNamespace="http://www.iata.org/IATA/2007/00" elementFormDefault="qualified" version="3.000" id="IATA2017.1">
+	<xs:include schemaLocation="IATA_LoadsControlCommonTypes.xsd"/>
+	<xs:include schemaLocation="IATA_CommonTypes.xsd"/>
+	<xs:include schemaLocation="IATA_SimpleTypes.xsd"/>
+	<xs:element name="IATA_SemiPermanentDataNotifRQ">
+		<xs:annotation>
+			<xs:documentation>Used to send semi permanent aircraft data as provided in the AHM560 data sheets.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Sender">
+					<xs:annotation>
+						<xs:documentation>General information that appears in the header/footer of each page in the printed version .</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:attribute name="CarrierCode" type="AlphaNumericStringLength2to3" use="required"/>
+						<xs:attribute name="CompletedBy" type="StringLength1to64" use="required"/>
+						<xs:attribute name="IssueNbr" type="AlphaNumericStringLength1to3" use="required"/>
+						<xs:attribute name="Date" type="xs:date" use="required"/>
+						<xs:attribute name="AircraftType" type="IATA_CodeType" use="required">
+							<xs:annotation>
+								<xs:documentation>Subtype, e. g. 733, 346. Refers to codes listed in Standard Schedules Information Manual (SSIM), Appendix A.
+</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="Series" type="xs:string" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ContactInfo" maxOccurs="2">
+					<xs:annotation>
+						<xs:documentation>Sheet A-1. 
+Supplier's and carrier's contact addresses.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="StreetAddress" type="AddressType"/>
+						</xs:sequence>
+						<xs:attribute name="Type" use="required">
+							<xs:simpleType>
+								<xs:restriction base="xs:NMTOKEN">
+									<xs:enumeration value="Supplier"/>
+									<xs:enumeration value="Carrier"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+						<xs:attribute name="TTY_Address" type="TTY_Address" use="optional"/>
+						<xs:attribute name="E_MailAddress" type="StringLength1to71" use="optional"/>
+						<xs:attribute name="PhoneNumber" type="StringLength1to32" use="optional"/>
+						<xs:attribute name="FaxNumber" type="StringLength1to32" use="optional"/>
+						<xs:attribute name="Remark" type="ListOfStringLength0to250" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="DocumentInfo">
+					<xs:annotation>
+						<xs:documentation>General information about the current document version.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:annotation>
+							<xs:documentation>Revision and issue information. (As defined in LCWG09)</xs:documentation>
+						</xs:annotation>
+						<xs:sequence>
+							<xs:annotation>
+								<xs:documentation>Sheet A-2. 
+Definition of documents and messages to be produced. 
+Definition of class codes and units of measure, valid for the entire document.</xs:documentation>
+							</xs:annotation>
+							<xs:element name="ChangesOverview" type="FreeTextType" minOccurs="0" maxOccurs="30">
+								<xs:annotation>
+									<xs:documentation>List of changes in the current revision. If new issue number, specify 'Update complete document', otherwise new/update/delete section+sheet+paragraph as '[N|U|D]section.sheet.paragraph'.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="EffectiveSheet" maxOccurs="4">
+								<xs:annotation>
+									<xs:documentation>General information for each sheet. Contains the data listed in the header and footer of each sheet in the printed version.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Sheet" maxOccurs="14">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="SheetDetail" maxOccurs="20">
+														<xs:complexType>
+															<xs:attribute name="MultiplePageID" type="AlphaNumericStringLength1to3" use="optional"/>
+															<xs:attribute name="IssueNbr" type="AlphaNumericStringLength1to14" use="optional"/>
+															<xs:attribute name="Date" type="xs:date" use="optional"/>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="Designator" type="Numeric1to99" use="required"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="SectionDesignator" type="AlphaLength1" use="required">
+										<xs:annotation>
+											<xs:documentation>A|B|C|D</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="DocumentProduced" maxOccurs="6">
+								<xs:annotation>
+									<xs:documentation>List of documents to be produced for flight planning and handling.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="Type" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:NMTOKEN">
+												<xs:enumeration value="NOTOC"/>
+												<xs:enumeration value="SEATPLAN"/>
+												<xs:enumeration value="LOADPLAN"/>
+												<xs:enumeration value="PASSENGER_INFO_LIST"/>
+												<xs:enumeration value="LOADSHEET"/>
+												<xs:enumeration value="LOADING_INSTRUCTION_REPORT"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="RequiredInd" type="xs:boolean" use="required">
+										<xs:annotation>
+											<xs:documentation>True=Document required, 
+
+False=Document not required</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="Addresses" type="ListOfTTY_Address" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="MessageRequirements" maxOccurs="19">
+								<xs:annotation>
+									<xs:documentation>List of post-departure messages</xs:documentation>
+									<xs:documentation>LDM	Load Message;
+ALI	Abbreviated Load Information Message;
+CPM	Container/Pallet Distribution Message;
+UCM	ULD Control Message;
+MVT	Movement Messages;
+DIV	Diversion Message;
+SOM	Seats Occupied Message;
+PTM	Passenger Transfer Message;
+PSM	Passenger Service Message;
+TPM	Teletype Passenger Manifest;
+PFS	Passenger Final Sales Message;
+IDM	Industry Discount Message;
+RQL	Request List Message;
+PNL/ADL	Passenger Name List, and Additions and Deletions List;
+SAL	Seats Available List;
+SLS	Statistical Load Summary;
+FMM	Fuel Monitoring Message;
+RQM	Request Information Message;
+UWS	ULD/Bulk Load Weight Signal</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="TPA_Extensions" minOccurs="0">
+											<xs:annotation>
+												<xs:documentation>Used to specify the list(s) of addresses</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="Type" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:NMTOKEN">
+												<xs:enumeration value="LDM">
+													<xs:annotation>
+														<xs:documentation>Load message</xs:documentation>
+													</xs:annotation>
+												</xs:enumeration>
+												<xs:enumeration value="ALI">
+													<xs:annotation>
+														<xs:documentation>Abbreviated load information message</xs:documentation>
+													</xs:annotation>
+												</xs:enumeration>
+												<xs:enumeration value="CPM">
+													<xs:annotation>
+														<xs:documentation>Container/Pallet distribution message</xs:documentation>
+													</xs:annotation>
+												</xs:enumeration>
+												<xs:enumeration value="UCM">
+													<xs:annotation>
+														<xs:documentation>ULD control message</xs:documentation>
+													</xs:annotation>
+												</xs:enumeration>
+												<xs:enumeration value="MVT">
+													<xs:annotation>
+														<xs:documentation>Movement messages</xs:documentation>
+													</xs:annotation>
+												</xs:enumeration>
+												<xs:enumeration value="DIV">
+													<xs:annotation>
+														<xs:documentation>Diversion message</xs:documentation>
+													</xs:annotation>
+												</xs:enumeration>
+												<xs:enumeration value="SOM">
+													<xs:annotation>
+														<xs:documentation>Seats occupied message</xs:documentation>
+													</xs:annotation>
+												</xs:enumeration>
+												<xs:enumeration value="PTM">
+													<xs:annotation>
+														<xs:documentation>Passenger transfer message</xs:documentation>
+													</xs:annotation>
+												</xs:enumeration>
+												<xs:enumeration value="PSM">
+													<xs:annotation>
+														<xs:documentation>Passenger service message</xs:documentation>
+													</xs:annotation>
+												</xs:enumeration>
+												<xs:enumeration value="TPM">
+													<xs:annotation>
+														<xs:documentation>Teletype passenger manifest</xs:documentation>
+													</xs:annotation>
+												</xs:enumeration>
+												<xs:enumeration value="PFS">
+													<xs:annotation>
+														<xs:documentation>Passenger final sales message</xs:documentation>
+													</xs:annotation>
+												</xs:enumeration>
+												<xs:enumeration value="IDM">
+													<xs:annotation>
+														<xs:documentation>Industry discount message</xs:documentation>
+													</xs:annotation>
+												</xs:enumeration>
+												<xs:enumeration value="RQL">
+													<xs:annotation>
+														<xs:documentation>Request list message</xs:documentation>
+													</xs:annotation>
+												</xs:enumeration>
+												<xs:enumeration value="PNL_ADL">
+													<xs:annotation>
+														<xs:documentation>Passenger name list and addition and deletions list</xs:documentation>
+													</xs:annotation>
+												</xs:enumeration>
+												<xs:enumeration value="SAL">
+													<xs:annotation>
+														<xs:documentation>Seats available list</xs:documentation>
+													</xs:annotation>
+												</xs:enumeration>
+												<xs:enumeration value="SLS">
+													<xs:annotation>
+														<xs:documentation>Statistical load summary</xs:documentation>
+													</xs:annotation>
+												</xs:enumeration>
+												<xs:enumeration value="FMM">
+													<xs:annotation>
+														<xs:documentation>Fuel monitoring message</xs:documentation>
+													</xs:annotation>
+												</xs:enumeration>
+												<xs:enumeration value="RQM">
+													<xs:annotation>
+														<xs:documentation>Request information message</xs:documentation>
+													</xs:annotation>
+												</xs:enumeration>
+												<xs:enumeration value="UWS">
+													<xs:annotation>
+														<xs:documentation>ULD/Bulk load weight signal</xs:documentation>
+													</xs:annotation>
+												</xs:enumeration>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="RequiredInd" type="xs:boolean" use="required">
+										<xs:annotation>
+											<xs:documentation>True=Message required
+False=Message not required</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="ClassCode" maxOccurs="5">
+								<xs:annotation>
+									<xs:documentation>Definition of class codes valid for the entire document.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="Code" type="AlphaLength1" use="required"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="UnitOfMeasure">
+								<xs:annotation>
+									<xs:documentation>Definition of units of measure valid for the entire document.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="WeightUnit" use="required">
+										<xs:annotation>
+											<xs:documentation>kg | lbs</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:NMTOKEN">
+												<xs:enumeration value="Kg"/>
+												<xs:enumeration value="Lbs"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="LengthUnit" use="required">
+										<xs:annotation>
+											<xs:documentation>Meters | Inches</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:NMTOKEN">
+												<xs:enumeration value="Meters"/>
+												<xs:enumeration value="Inches"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="VolumeUnit" use="required">
+										<xs:annotation>
+											<xs:documentation>Cu.mtr | Cu.ft</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:NMTOKEN">
+												<xs:enumeration value="CuMtr"/>
+												<xs:enumeration value="CuFt"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="LiquidVolumeUnit" use="required">
+										<xs:annotation>
+											<xs:documentation>Liter | US Gallon</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:NMTOKEN">
+												<xs:enumeration value="Liter"/>
+												<xs:enumeration value="USGallon"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="IssueNbr" type="Numeric1to3" use="required"/>
+						<xs:attribute name="RevisionNbr" type="Numeric1to3" use="optional"/>
+						<xs:attribute name="ReleaseDate" type="xs:date" use="required"/>
+						<xs:attribute name="CompletedBy" type="StringLength1to64" use="optional"/>
+						<xs:attribute name="Reason" type="StringLength0to250" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="WeightInfo">
+					<xs:annotation>
+						<xs:documentation>Sheet B-1, 2, 3. Standard and per variation passenger, baggage, crew and dry operating weights.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="StandardWeight" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Definition of standard passenger weights and weights per variation (e. g. domestic, international, charter, winter timetable, summer timetable, etc.)</xs:documentation>
+									<xs:documentation>Defined as optional as it is not used for cargo aircraft. Should be mandatory for passenger aircraft.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="PerVariation" maxOccurs="20">
+											<xs:annotation>
+												<xs:documentation>Variation designation and weights for child, infant, (optionally) cabin baggage and either adult or male/female.</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:complexContent>
+													<xs:extension base="WeightInfoType">
+														<xs:attributeGroup ref="VariationGroup"/>
+														<xs:attributeGroup ref="WeightGroup"/>
+													</xs:extension>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="Remark" type="ListOfStringLength0to250" use="optional"/>
+									<xs:attribute name="CabinBaggageWtIncluded" type="xs:boolean" use="required">
+										<xs:annotation>
+											<xs:documentation>True=Passenger weight includes cabin baggage weight
+False=Passenger weight does not include cabin baggage weight</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Passenger" minOccurs="0" maxOccurs="20">
+								<xs:annotation>
+									<xs:documentation>If passenger weights in "Passenger" include cabin baggage and vary by class, these are defined here by class and by variation (e. g. F/C/M domestic, F/C/M international, winter timetable, etc.)</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="PaxWeightPerClass" maxOccurs="5">
+											<xs:annotation>
+												<xs:documentation>Class designation as in A-2 and weights for child, infant, (optionally) cabin baggage and either adult or male/female.</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:complexContent>
+													<xs:extension base="WeightInfoType">
+														<xs:attribute name="Code" type="AlphaLength1" use="required"/>
+														<xs:attributeGroup ref="WeightGroup"/>
+													</xs:extension>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attributeGroup ref="VariationGroup"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="CheckedBag" minOccurs="0" maxOccurs="20">
+								<xs:annotation>
+									<xs:documentation>Definition of standard baggage weight and weights per variation (e. g. domestic, international, winter timetable, etc.).</xs:documentation>
+									<xs:documentation>Differing from the AHM560 definition, checked baggage weight is defined here by class, this entity is repeated for each variation. Thus, the definitions of cabin baggage and checked baggage are consistent.</xs:documentation>
+									<xs:documentation>Defined as optional as it is not used for cargo aircraft. Should be mandatory for passenger aircraft.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="BaggageWeightPerClass" maxOccurs="5">
+											<xs:annotation>
+												<xs:documentation>For each class defined in A-2, checked baggage weight per piece and per passenger.</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:choice>
+													<xs:element name="ActualBagWeight">
+														<xs:complexType>
+															<xs:attribute name="ActualIndicator" type="StringLength1to8" use="required" fixed="actual"/>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="StandardBagWeight">
+														<xs:complexType>
+															<xs:attribute name="PerPiece" use="required">
+																<xs:annotation>
+																	<xs:documentation>Weight in kg/lbs.</xs:documentation>
+																</xs:annotation>
+																<xs:simpleType>
+																	<xs:restriction base="xs:integer">
+																		<xs:minInclusive value="1"/>
+																		<xs:maxInclusive value="999"/>
+																	</xs:restriction>
+																</xs:simpleType>
+															</xs:attribute>
+															<xs:attribute name="PerPax" use="required">
+																<xs:annotation>
+																	<xs:documentation>Weight in kg/lbs.</xs:documentation>
+																</xs:annotation>
+																<xs:simpleType>
+																	<xs:restriction base="xs:integer">
+																		<xs:minInclusive value="1"/>
+																		<xs:maxInclusive value="999"/>
+																	</xs:restriction>
+																</xs:simpleType>
+															</xs:attribute>
+														</xs:complexType>
+													</xs:element>
+												</xs:choice>
+												<xs:attribute name="Code" type="AlphaLength1" use="required">
+													<xs:annotation>
+														<xs:documentation>Class code</xs:documentation>
+													</xs:annotation>
+												</xs:attribute>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attributeGroup ref="VariationGroup"/>
+									<xs:attribute name="Remark" type="ListOfStringLength0to250" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="CrewWeightInfo">
+								<xs:annotation>
+									<xs:documentation>Definition of crew weights. Crew hand baggage shall be included here.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="CrewWeight" maxOccurs="2">
+											<xs:complexType>
+												<xs:complexContent>
+													<xs:extension base="WeightInfoType">
+														<xs:attribute name="Type" use="required">
+															<xs:simpleType>
+																<xs:restriction base="xs:NMTOKEN">
+																	<xs:enumeration value="Cockpit"/>
+																	<xs:enumeration value="Cabin"/>
+																</xs:restriction>
+															</xs:simpleType>
+														</xs:attribute>
+													</xs:extension>
+												</xs:complexContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="Remark" type="ListOfStringLength0to250" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="CrewBaggageInfo" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Definition of crew baggage weights.</xs:documentation>
+									<xs:documentation>Cockpit baggage weights are mandatory. Provide cabin baggabe weights for passenger aircraft only.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="CrewBaggage" maxOccurs="20">
+											<xs:complexType>
+												<xs:attributeGroup ref="VariationGroup">
+													<xs:annotation>
+														<xs:documentation>Used to define the trip type, e. g. "Long haul", "Short haul", etc.</xs:documentation>
+													</xs:annotation>
+												</xs:attributeGroup>
+												<xs:attribute name="Type" use="required">
+													<xs:simpleType>
+														<xs:restriction base="xs:NMTOKEN">
+															<xs:enumeration value="Cockpit"/>
+															<xs:enumeration value="Cabin"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
+												<xs:attribute name="Weight" use="required">
+													<xs:simpleType>
+														<xs:restriction base="xs:integer">
+															<xs:minInclusive value="0"/>
+															<xs:maxInclusive value="999"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="Remark" type="ListOfStringLength0to250" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="DOW_DOI_Details">
+								<xs:annotation>
+									<xs:documentation>Definition of items included in DOW/DOI.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="DOW_DOI" maxOccurs="14">
+											<xs:complexType>
+												<xs:attribute name="Item" type="IATA_CodeType" use="required">
+													<xs:annotation>
+														<xs:documentation xml:lang="en">Refers to IATA PADIS code list DOI.</xs:documentation>
+													</xs:annotation>
+												</xs:attribute>
+												<xs:attribute name="IncludedInDOWInd" type="xs:boolean" use="required">
+													<xs:annotation>
+														<xs:documentation>True=Item included in DOW calculation; 
+False=Item not included in DOW calculation</xs:documentation>
+													</xs:annotation>
+												</xs:attribute>
+												<xs:attribute name="IncludedInDOIInd" type="xs:boolean" use="required">
+													<xs:annotation>
+														<xs:documentation>True=Item included in DOI calculation; 
+False=Item not included in DOI calculation</xs:documentation>
+													</xs:annotation>
+												</xs:attribute>
+												<xs:attribute name="Remark" type="ListOfStringLength0to250" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="Remark" type="ListOfStringLength0to250" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="CrewRemark" type="ListOfStringLength0to250" use="optional"/>
+						<xs:attribute name="PaxRemark" type="ListOfStringLength0to250" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="BalanceInfo">
+					<xs:annotation>
+						<xs:documentation>Sheet C-1. Special information to be entered in the lower part of the EDP loadsheet.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:annotation>
+							<xs:documentation>Definition if loadmessage before LMC is to be shown in loadsheet.</xs:documentation>
+						</xs:annotation>
+						<xs:sequence>
+							<xs:element name="BalanceOutput" maxOccurs="12">
+								<xs:annotation>
+									<xs:documentation>Defines which balance items are included in the loadsheet.</xs:documentation>
+									<xs:documentation>The attributes LoadsheetItem (=code list) and Type (=enumeration)represent the first and second columns of table 1.1 in sheet C1. They have to be filled with the respectively corresponding values.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="Type" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:NMTOKEN">
+												<xs:enumeration value="BI"/>
+												<xs:enumeration value="DOI"/>
+												<xs:enumeration value="DLI"/>
+												<xs:enumeration value="MACDLW"/>
+												<xs:enumeration value="LIZFW"/>
+												<xs:enumeration value="LITOW"/>
+												<xs:enumeration value="LILAW"/>
+												<xs:enumeration value="MACZFW"/>
+												<xs:enumeration value="MACTOW"/>
+												<xs:enumeration value="MACLAW"/>
+												<xs:enumeration value="STABTO_ANU"/>
+												<xs:enumeration value="STABTO_AND"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="LoadsheetItem" type="IATA_CodeType" use="required">
+										<xs:annotation>
+											<xs:documentation>Refers to IATA PADIS code list BAL.</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="RequiredInd" type="xs:boolean" use="required">
+										<xs:annotation>
+											<xs:documentation>True=Item included in loadsheet calculation;
+False=Item not included in loadsheet calculation</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="Remark" type="ListOfStringLength0to250" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="PaxTrimOutput" minOccurs="3" maxOccurs="3">
+								<xs:annotation>
+									<xs:documentation>Definition of passenger trim method (Class, cabin area, seat row).</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="Type" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:NMTOKEN">
+												<xs:enumeration value="Class_trim"/>
+												<xs:enumeration value="Cabin_area_trim"/>
+												<xs:enumeration value="Seat_row_trim"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="RequiredInd" type="xs:boolean" use="required">
+										<xs:annotation>
+											<xs:documentation>True=Trim by given method; False=Method not used for trim calculation. Only one of the three options can be True.</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="Remark" type="ListOfStringLength0to250" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="SpecialInfo" type="FreeTextType" minOccurs="0" maxOccurs="10">
+								<xs:annotation>
+									<xs:documentation>Supplementary optional information, e. g. captain's information, CG limts, ramp weight.</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="LoadMsgInd" type="xs:boolean" use="required">
+							<xs:annotation>
+								<xs:documentation>True=Special information to be included.
+False=No special information.</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="BasicIndexInfo">
+					<xs:annotation>
+						<xs:documentation>Sheet C-2. Definition of values for index,       %MAC/RC and stab trim setting calculation</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:annotation>
+							<xs:documentation>Definition of values for basic index and MAC/RC formula.</xs:documentation>
+						</xs:annotation>
+						<xs:sequence>
+							<xs:element name="StabTrimInfo" minOccurs="0" maxOccurs="8">
+								<xs:annotation>
+									<xs:documentation>Definition of stabilizer trim settings for changing MAC/RC values and weights, as defined in LCWG09.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Weight" maxOccurs="10">
+											<xs:annotation>
+												<xs:documentation>Specifiy minimum one value if no stabilizer change at different weights.</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="Setting" minOccurs="2" maxOccurs="30">
+														<xs:annotation>
+															<xs:documentation>Specify at least minimum and maximum MAC/RC values.</xs:documentation>
+														</xs:annotation>
+														<xs:complexType>
+															<xs:attribute name="MAC_RC_Value" use="required">
+																<xs:simpleType>
+																	<xs:restriction base="xs:decimal">
+																		<xs:minInclusive value="0"/>
+																		<xs:maxInclusive value="999"/>
+																	</xs:restriction>
+																</xs:simpleType>
+															</xs:attribute>
+															<xs:attribute name="StabilizerChgItem" use="required">
+																<xs:simpleType>
+																	<xs:restriction base="xs:decimal">
+																		<xs:minInclusive value="-99"/>
+																		<xs:maxInclusive value="99"/>
+																	</xs:restriction>
+																</xs:simpleType>
+															</xs:attribute>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+												<xs:attribute name="Value" use="required">
+													<xs:simpleType>
+														<xs:restriction base="xs:integer">
+															<xs:minInclusive value="0"/>
+															<xs:maxInclusive value="9999999"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="FlapsSettingOrRangeFrom" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:integer">
+												<xs:minInclusive value="0"/>
+												<xs:maxInclusive value="99"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="FlapsRangeTo" use="optional">
+										<xs:simpleType>
+											<xs:restriction base="xs:integer">
+												<xs:minInclusive value="0"/>
+												<xs:maxInclusive value="99"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="ThrustRatingOrRangeFrom" type="xs:integer" use="optional"/>
+									<xs:attribute name="ThrustRangeTo" type="xs:integer" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="RefStation" use="required">
+							<xs:simpleType>
+								<xs:restriction base="xs:decimal">
+									<xs:minInclusive value="0"/>
+									<xs:maxInclusive value="99999"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+						<xs:attribute name="ConstantK" use="required">
+							<xs:simpleType>
+								<xs:restriction base="xs:integer">
+									<xs:minInclusive value="0"/>
+									<xs:maxInclusive value="9999"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+						<xs:attribute name="ConstantC" use="required">
+							<xs:simpleType>
+								<xs:restriction base="xs:integer">
+									<xs:minInclusive value="0"/>
+									<xs:maxInclusive value="9999999"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+						<xs:attribute name="MAC_RC_Length" use="required">
+							<xs:simpleType>
+								<xs:restriction base="xs:decimal">
+									<xs:minInclusive value="0"/>
+									<xs:maxInclusive value="9999"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+						<xs:attribute name="LEMAC" use="required">
+							<xs:simpleType>
+								<xs:restriction base="xs:decimal">
+									<xs:minInclusive value="0"/>
+									<xs:maxInclusive value="99999"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="FleetDetails">
+					<xs:annotation>
+						<xs:documentation>Sheet C-3, 4. Aircraft registrations, weight and index details.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="FleetData" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>Definition of weight type and fleet weight/index.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="PerRegistrationAdjustmt" maxOccurs="999">
+											<xs:annotation>
+												<xs:documentation>Per tail number: definition of weight and index adjustments.</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:attribute name="RegTailNbr" type="AlphaNumericStringLength10" use="required"/>
+												<xs:attribute name="WeightAdj" use="required">
+													<xs:simpleType>
+														<xs:restriction base="xs:decimal">
+															<xs:minInclusive value="-9999999"/>
+															<xs:maxInclusive value="9999999"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
+												<xs:attribute name="IndexAdj" use="required">
+													<xs:simpleType>
+														<xs:restriction base="xs:decimal">
+															<xs:minInclusive value="-999.99"/>
+															<xs:maxInclusive value="999.99"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="WeightType" use="required">
+										<xs:annotation>
+											<xs:documentation>Definition of weight type used: DRY OPERATING WEIGHT or BASIC WEIGHT.</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:NMTOKEN">
+												<xs:enumeration value="DryOperating"/>
+												<xs:enumeration value="Basic"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attributeGroup ref="WeightItemGroup">
+										<xs:annotation>
+											<xs:documentation>Definition of fleet weight and index.</xs:documentation>
+										</xs:annotation>
+									</xs:attributeGroup>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="PerRegistrationLimit" maxOccurs="999">
+								<xs:annotation>
+									<xs:documentation>Per tail number: definition of weight limitations for ramp/taxi, take-off, zero fuel and landing weights.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="RegTailNbr" type="AlphaNumericStringLength10" use="required"/>
+									<xs:attribute name="Type" type="ConditionType" use="required">
+										<xs:annotation>
+											<xs:documentation>Ramp/Taxi, TakeOff, ZeroFuel or Landing</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="Weight" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:integer">
+												<xs:minInclusive value="0"/>
+												<xs:maxInclusive value="9999999"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="CG_Limits" maxOccurs="10">
+					<xs:annotation>
+						<xs:documentation>Sheet C-5. Forward and aft balance limits for different conditions.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:annotation>
+							<xs:documentation>Definition of forward and aft CG limits.</xs:documentation>
+						</xs:annotation>
+						<xs:sequence>
+							<xs:element name="ForwardItem" maxOccurs="99">
+								<xs:complexType>
+									<xs:attribute name="Applicability" type="ConditionType" use="required"/>
+									<xs:attributeGroup ref="WeightItemGroup"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="AftItem" maxOccurs="99">
+								<xs:complexType>
+									<xs:attribute name="Applicability" type="ConditionType" use="required"/>
+									<xs:attributeGroup ref="WeightItemGroup"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="BalanceChart" type="MultimediaObjectType" minOccurs="0"/>
+						</xs:sequence>
+						<xs:attribute name="SpecialCondition" type="AlphaNumericStringLength1to20" use="required">
+							<xs:annotation>
+								<xs:documentation>Limits affected by e. g. passenger, fuel, version, … or NIL.</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="Remark" type="ListOfStringLength0to250" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="FuelInfo" maxOccurs="5">
+					<xs:annotation>
+						<xs:documentation>Sheet C-6. Definition of fuel procedure (standard/nonstandard) and effect of fuel weight on index for different fuel density values.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Density" maxOccurs="20">
+								<xs:annotation>
+									<xs:documentation>Specification of fuel density.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Fuel" maxOccurs="999">
+											<xs:annotation>
+												<xs:documentation>Index influence for a given fuel weight.</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:attributeGroup ref="WeightItemGroup"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="TaxiFuel">
+											<xs:annotation>
+												<xs:documentation>Index influence for the taxi fuel weight.</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:attributeGroup ref="WeightItemGroup"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="Density" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:decimal">
+												<xs:minInclusive value="0"/>
+												<xs:maxInclusive value="99"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="StandardProcedureInd" type="xs:boolean" use="required">
+							<xs:annotation>
+								<xs:documentation>True=Standard procedure
+False=Non standard procedure</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="Remark" type="ListOfStringLength0to250" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="CrewInfo">
+					<xs:annotation>
+						<xs:documentation>Sheet C-7. Definition of crew weights and index influece.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:annotation>
+							<xs:documentation>Definition of length of arm and index influence per weight unit for the cockpit crew seats.</xs:documentation>
+						</xs:annotation>
+						<xs:sequence>
+							<xs:element name="CockpitCrewSeat" maxOccurs="5">
+								<xs:complexType>
+									<xs:attribute name="Location" type="AlphaNumericStringLength1to20"/>
+									<xs:attribute name="SeatQty" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:integer">
+												<xs:minInclusive value="1"/>
+												<xs:maxInclusive value="5"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attributeGroup ref="LengthInfluenceGroup"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="CabinCrewSeat" minOccurs="0" maxOccurs="30">
+								<xs:annotation>
+									<xs:documentation>Definition of length of arm and index influence per weight unit for the cabin crew seats.</xs:documentation>
+									<xs:documentation>Defined as optional as it is not used for cargo aircraft. Should be mandatory for passenger aircraft.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="Location" type="AlphaNumericStringLength1to20" use="required"/>
+									<xs:attribute name="MaxSeatQty" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:integer">
+												<xs:minInclusive value="0"/>
+												<xs:maxInclusive value="99"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attributeGroup ref="LengthInfluenceGroup"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="CrewDistribution" minOccurs="0" maxOccurs="30">
+								<xs:annotation>
+									<xs:documentation>List of crew codes and number of crew members.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="CrewLocation" minOccurs="0" maxOccurs="30">
+											<xs:annotation>
+												<xs:documentation>Crew seats location, to be specified only if FleetDetails.FleetData@WeightType=BASIC WEIGHT.</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:attribute name="Location" type="AlphaNumericStringLength1to20" use="required"/>
+												<xs:attribute name="CabinQty" use="optional">
+													<xs:simpleType>
+														<xs:restriction base="xs:integer">
+															<xs:minInclusive value="0"/>
+															<xs:maxInclusive value="99"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="Type" type="AlphaNumericStringLength1to8" use="required"/>
+									<xs:attribute name="CockpitQty" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:integer">
+												<xs:minInclusive value="0"/>
+												<xs:maxInclusive value="99"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="CabinQty" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:integer">
+												<xs:minInclusive value="0"/>
+												<xs:maxInclusive value="99"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="BagLoc" type="AlphaNumericStringLength1to20" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="GalleyPantryInfo" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Sheet C-8. Definition of galley and pantry details.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="GalleyItem" maxOccurs="10">
+								<xs:annotation>
+									<xs:documentation>Defintion of galley locations and influence on arm of reference and index.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="Location" type="AlphaNumericStringLength1to20" use="required"/>
+									<xs:attributeGroup ref="LengthInfluenceGroup"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Pantry" maxOccurs="20">
+								<xs:annotation>
+									<xs:documentation>Definition of pantry weights and codes.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="PantryWeightPerLocation" maxOccurs="9">
+											<xs:complexType>
+												<xs:attribute name="Location" type="AlphaNumericStringLength1to20" use="required"/>
+												<xs:attribute name="Weight" use="optional">
+													<xs:simpleType>
+														<xs:restriction base="xs:integer">
+															<xs:minInclusive value="0"/>
+															<xs:maxInclusive value="9999"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="Code" type="AlphaNumericStringLength1to20" use="required"/>
+									<xs:attribute name="TotalWeight" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:integer">
+												<xs:minInclusive value="0"/>
+												<xs:maxInclusive value="9999"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="TotalPantryWeight" type="NumericStringLength1to5" use="required"/>
+						<xs:attribute name="GalleyRemark" type="ListOfStringLength0to250" use="optional"/>
+						<xs:attribute name="PantryRemark" type="ListOfStringLength0to250" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="CabinInfo" minOccurs="0" maxOccurs="999">
+					<xs:annotation>
+						<xs:documentation>Sheet C-9. Description of cabin sections and influence on length of arm and index.</xs:documentation>
+						<xs:documentation>Not used for cargo aircraft.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Section" maxOccurs="20">
+								<xs:annotation>
+									<xs:documentation>For each cabin configuration: definition of cabin sections, including number of seats per class, influence on length of arm and index.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Class" maxOccurs="5">
+											<xs:annotation>
+												<xs:documentation>Number of seats per class.</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:attribute name="Code" type="AlphaLength1" use="required"/>
+												<xs:attribute name="SeatQty" use="required">
+													<xs:simpleType>
+														<xs:restriction base="xs:integer">
+															<xs:minInclusive value="0"/>
+															<xs:maxInclusive value="9999"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="Name" type="AlphaNumericStringLength1to8" use="required">
+										<xs:annotation>
+											<xs:documentation>Trim section, e. g. 0A, 0B. Code list in AHM505.</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attributeGroup ref="LengthInfluenceGroup"/>
+									<xs:attribute name="TotalSeatsQty" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:integer">
+												<xs:minInclusive value="0"/>
+												<xs:maxInclusive value="9999"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="ClassTotal" maxOccurs="5">
+								<xs:annotation>
+									<xs:documentation>For each cabin configuration: total number of seats per class.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="Code" type="AlphaLength1" use="required"/>
+									<xs:attribute name="SeatQty" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:integer">
+												<xs:minInclusive value="0"/>
+												<xs:maxInclusive value="9999"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="Configuration" type="AlphaNumericStringLength1to20" use="required">
+							<xs:annotation>
+								<xs:documentation>e. g. C24M146, F16C64M310</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="SeatConfiguration" minOccurs="0" maxOccurs="99">
+					<xs:annotation>
+						<xs:documentation>Sheet C-10, 11. Seatplan layout.</xs:documentation>
+						<xs:documentation>Not used for cargo aircraft.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Row" maxOccurs="999">
+								<xs:annotation>
+									<xs:documentation>Definition of Seat row influence on length of arm and index.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Seat" maxOccurs="20">
+											<xs:annotation>
+												<xs:documentation>Description of seat characteristics.</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:attribute name="SeatIdentifier" type="AlphaNumericStringLength1to3" use="required">
+													<xs:annotation>
+														<xs:documentation>Row and seat designators are defined as alphanumeric, because there are airlines that designate the rows by letters and the seats by numbers. </xs:documentation>
+													</xs:annotation>
+												</xs:attribute>
+												<xs:attribute name="SeatCharacteristics" type="ListOfIATA_CodeType" use="required">
+													<xs:annotation>
+														<xs:documentation>Refer to PADIS code list 9825.</xs:documentation>
+													</xs:annotation>
+												</xs:attribute>
+												<xs:attribute name="SeatOccupation" type="IATA_CodeType" use="optional">
+													<xs:annotation>
+														<xs:documentation xml:lang="en">Used to specify stretcher and other medical requirements.  Refer to PADIS code list 9865.</xs:documentation>
+													</xs:annotation>
+												</xs:attribute>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="RowIdentifier" type="AlphaNumericStringLength1to8" use="required">
+										<xs:annotation>
+											<xs:documentation>Row and seat designators are defined as alphanumeric, because there are airlines that designate the rows by letters and the seats by numbers. </xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="CabinSection" type="AlphaNumericStringLength1to20" use="required"/>
+									<xs:attributeGroup ref="LengthInfluenceGroup"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="Configuration" type="AlphaNumericStringLength1to20" use="required">
+							<xs:annotation>
+								<xs:documentation>e. g. C24M146, F16C64M310</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="RegTailNbr" type="AlphaNumericStringLength10"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="CompartmentTrim" maxOccurs="99">
+					<xs:annotation>
+						<xs:documentation>Sheet C-12, 13. Description of compartments/bays and influence on length of arm and index.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:annotation>
+							<xs:documentation>For each compartment configuration: description of compartments including max. gross weight and volume and influence on arm of reference and index.</xs:documentation>
+						</xs:annotation>
+						<xs:sequence>
+							<xs:element name="CompartmentItem" maxOccurs="10">
+								<xs:annotation>
+									<xs:documentation>Description of compartments, including max. gross weight and volume and influence on arm of reference and index.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="BayItem" minOccurs="0" maxOccurs="99">
+											<xs:annotation>
+												<xs:documentation>Description of bays/sections within one compartment, including max. gross weight and volume and influence on arm of reference and index.</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:attribute name="Designation" type="AlphaNumericStringLength1to20" use="required">
+													<xs:annotation>
+														<xs:documentation>Code list in AHM505. Additionally Security locker (DIP) also possible.</xs:documentation>
+													</xs:annotation>
+												</xs:attribute>
+												<xs:attributeGroup ref="WeightVolumeGroup"/>
+												<xs:attributeGroup ref="LengthInfluenceGroup"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="CompNbr" type="Numeric1to99" use="required">
+										<xs:annotation>
+											<xs:documentation>Code list in AHM505.</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="Description" type="AlphaNumericStringLength1to20" use="required"/>
+									<xs:attributeGroup ref="WeightVolumeGroup"/>
+									<xs:attributeGroup ref="LengthInfluenceGroup"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="BellyConfigCode" type="AlphaNumericStringLength1to20" use="required">
+							<xs:annotation>
+								<xs:documentation>Defined by airline.</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="Remark" type="ListOfStringLength0to250" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="LoadLimitInfo" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Sheet C-12, 9.1 and 9.2 as defined in LCWG09. Definition of combined and cumulative load limitations.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Combined" minOccurs="0" maxOccurs="10">
+								<xs:annotation>
+									<xs:documentation>Max. weights for compartment/bay/hold combinations as defined in LCWG09.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="CombinedLoadPosition" maxOccurs="10">
+											<xs:annotation>
+												<xs:documentation>Position designations.</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:attribute name="Position" type="AlphaNumericStringLength1to20" use="required"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="MaxCombinedWeight" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:integer">
+												<xs:minInclusive value="0"/>
+												<xs:maxInclusive value="999999"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="Remark" type="ListOfStringLength0to250" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Condition" minOccurs="0" maxOccurs="10">
+								<xs:annotation>
+									<xs:documentation>Specification of special condition for cumulative load limits.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Cumulative" maxOccurs="10">
+											<xs:annotation>
+												<xs:documentation>Cumulative load limitations as defined in LCWG09. Use +, - or 0 to indicate forward, rearward or individual cumulative in "Type".</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:attribute name="ZoneName" type="AlphaNumericStringLength1to20" use="required"/>
+												<xs:attribute name="From" use="required">
+													<xs:simpleType>
+														<xs:restriction base="xs:decimal">
+															<xs:minInclusive value="-9999"/>
+															<xs:maxInclusive value="9999"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
+												<xs:attribute name="To" use="required">
+													<xs:simpleType>
+														<xs:restriction base="xs:decimal">
+															<xs:minInclusive value="-9999"/>
+															<xs:maxInclusive value="9999"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
+												<xs:attribute name="MaxWeight" use="required">
+													<xs:simpleType>
+														<xs:restriction base="xs:integer">
+															<xs:minInclusive value="0"/>
+															<xs:maxInclusive value="999999"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
+												<xs:attribute name="MaxCumulative" use="required">
+													<xs:simpleType>
+														<xs:restriction base="xs:integer">
+															<xs:minInclusive value="0"/>
+															<xs:maxInclusive value="999999"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
+												<xs:attribute name="Type" type="AlphaNumericStringLength1" use="required"/>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="ConditionName" type="StringLength0to50" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="LateralAsymmetricalLimit" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Sheet C-13, 10.1 as defined in LCWG09. Definition of asymmetrical load limitations.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:annotation>
+							<xs:documentation>Lateral/asymmetrical limitations. Indicate weight reference (take-off, taxi, landing). Alternatively, specify manufacturer's formula.</xs:documentation>
+						</xs:annotation>
+						<xs:choice>
+							<xs:element name="ImbalanceTable" maxOccurs="10">
+								<xs:complexType>
+									<xs:attribute name="LateralImbalance" type="xs:integer" use="required"/>
+									<xs:attribute name="RefWeight" type="xs:integer" use="required"/>
+									<xs:attribute name="MAC_Percent" type="Percentage" use="required"/>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="ManufacturersFormula">
+								<xs:complexType>
+									<xs:attribute name="Formula" type="StringLength0to250" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:choice>
+						<xs:attribute name="WeightReference" use="required">
+							<xs:annotation>
+								<xs:documentation>TO | TX | LD</xs:documentation>
+							</xs:annotation>
+							<xs:simpleType>
+								<xs:restriction base="xs:NMTOKEN">
+									<xs:enumeration value="TO"/>
+									<xs:enumeration value="TX"/>
+									<xs:enumeration value="LD"/>
+								</xs:restriction>
+							</xs:simpleType>
+						</xs:attribute>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="BallastInfo">
+					<xs:annotation>
+						<xs:documentation>Sheet C-14. Definition of ballast details, if FixedProvisions=YES.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:annotation>
+							<xs:documentation>If "Fixed Provisions" (for carrying ballast) = YES, specify location, weight and index change.</xs:documentation>
+						</xs:annotation>
+						<xs:sequence>
+							<xs:element name="BallastLoc" minOccurs="0" maxOccurs="3">
+								<xs:annotation>
+									<xs:documentation>Location, weight and index influence of ballast.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:attribute name="Identifier" type="AlphaNumericStringLength1to20"/>
+									<xs:attribute name="Location" type="AlphaNumericStringLength1to20" use="required">
+										<xs:annotation>
+											<xs:documentation>Refers either to a compartment number or a bay/section designation or a galley location.</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attributeGroup ref="WeightItemGroup"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="FixedProvisionsInd" type="xs:boolean" use="required">
+							<xs:annotation>
+								<xs:documentation>True=Fixed provisions for ballast defined
+False=No fixed provisions for ballast</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
+						<xs:attribute name="Remark" type="ListOfStringLength0to250" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="IdealTrimLine" minOccurs="0" maxOccurs="20">
+					<xs:annotation>
+						<xs:documentation>Sheet D-1. Ideal trim line at ZFW for fuel saving purposes.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:annotation>
+							<xs:documentation>List of weight and index change values to specify the ideal trim line at ZFW for fuel saving purposes.</xs:documentation>
+						</xs:annotation>
+						<xs:attributeGroup ref="WeightItemGroup"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ULD_Info" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Sheet D-2. List of ULD details, specifying tare weight, maximum capacity and restrictions.</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Item" maxOccurs="50">
+								<xs:annotation>
+									<xs:documentation>Definition of weight, sizes and height restriction for a ULD type.</xs:documentation>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="PositionRestric" maxOccurs="40">
+											<xs:annotation>
+												<xs:documentation>List of positions where ULD type can not be loaded.</xs:documentation>
+											</xs:annotation>
+											<xs:complexType>
+												<xs:attribute name="Designation" type="AlphaNumericStringLength1to20" use="required">
+													<xs:annotation>
+														<xs:documentation>Designations as defined in CompartmentTrim/CompartmentItem/BayItem/@Designation</xs:documentation>
+													</xs:annotation>
+												</xs:attribute>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+									<xs:attribute name="Type" type="AlphaNumericStringLength1to3" use="required">
+										<xs:annotation>
+											<xs:documentation>Code list in ULD Technical Manual, Standard Specification 40/1.</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attribute name="TareWeight" use="required">
+										<xs:simpleType>
+											<xs:restriction base="xs:integer">
+												<xs:minInclusive value="0"/>
+												<xs:maxInclusive value="9999"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="BaseSize" type="AlphaNumericStringLength1to8" use="required">
+										<xs:annotation>
+											<xs:documentation>Code list in ULD Technical Manual, Standard Specification 40/1.</xs:documentation>
+										</xs:annotation>
+									</xs:attribute>
+									<xs:attributeGroup ref="WeightVolumeGroup"/>
+									<xs:attribute name="HeightRestriction" use="optional">
+										<xs:annotation>
+											<xs:documentation>Height in cm/inches.</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:integer">
+												<xs:minInclusive value="0"/>
+												<xs:maxInclusive value="999"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:attribute>
+									<xs:attribute name="Remark" type="ListOfStringLength0to250" use="optional"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="SpecialLoadRegulations" minOccurs="0">
+					<xs:annotation>
+						<xs:documentation>Sheet D-3. Company regulations for special load (e. g. AVI, DGR, etc.).</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:annotation>
+							<xs:documentation>Relevant company regulations for special load (AVI, dangerous goods, etc.).</xs:documentation>
+						</xs:annotation>
+						<xs:attribute name="CompanyRegulation" type="ListOfStringLength0to250" use="required"/>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attributeGroup ref="IATA_PayloadStdAttributes"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.iata.org/IATA/2007/00" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.iata.org/IATA/2007/00" elementFormDefault="qualified" version="1.003" id="IATA2017.1">
+	<xs:include schemaLocation="IATA_LoadsControlCommonTypes.xsd"/>
+	<xs:element name="IATA_SemiPermanentDataNotifRS">
+		<xs:annotation>
+			<xs:documentation>Used to send an acknowledgement that the semi permanent aircraft data as provided in the AHM560 data sheets was received or to provide errors/reasons as to why the data could not be processed.</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice>
+				<xs:sequence>
+					<xs:element name="Success" type="SuccessType"/>
+					<xs:element name="Warnings" minOccurs="0">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="WarningsType"/>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Sender">
+						<xs:complexType>
+							<xs:attribute name="HandlingAgentAirline" type="AlphaNumericStringLength1to20" use="required"/>
+							<xs:attribute name="CarrierCode" type="AlphaNumericStringLength1to3" use="required"/>
+							<xs:attribute name="Date" type="xs:date" use="required"/>
+							<xs:attribute name="AirEquipType" type="StringLength3" use="required"/>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:element name="Errors" type="ErrorsType"/>
+			</xs:choice>
+			<xs:attributeGroup ref="IATA_PayloadStdAttributes"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
